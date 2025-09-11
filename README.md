@@ -53,17 +53,24 @@ Characters (letters, digits, symbols) are converted into numbers using a fixed m
 ## Example
 
 ### Encrypt (2-share mode)
+create a One Time Pad with at least the message length:
+(S)plit, (C)ombine, (M)astercode, (O)TP, (W)ipe, (Q)uit? o  
+Code length: 20  
+Code start#: 1  
+Code last#: 1  
+C1: i*S=#>Erbj8BYz<Eo:b"  
 
-```text
-Message: Hello_World
-Code1/2: use_good_random_numbers_here
-→ Output: Code2/2: z²7/8G+B<Ö3ISHJ1IBJURED1ORER
-
-Code1: use_good_random_numbers_here
-Code2: z²7/8G+B<Ö3ISHJ1IBJURED1ORER
-→ Message: Hello_World
-
-
+split message with OTP:
+(S)plit, (C)ombine, (M)astercode, (O)TP, (W)ipe, (Q)uit? s  
+enter shares count 2 -> 99: 2  
+Message: short secret message  
+C1: i*S=#>Erbj8BYz<Eo:b"  
+-> result:  
+C1: i*S=#>Erbj8BYz<Eo:b"  
+C2: A,Mß,]e<18WiX<re4k5ß  
+-> combine:  
+Message: short secret message  
+  
 🎲 Why secrets?
 secrets uses system-level sources (/dev/urandom or CryptGenRandom) designed for crypto.
 random is deterministic and predictable, even if seeded with time.
@@ -81,7 +88,7 @@ Store pads safely (offline, or in encrypted vaults).
 
 Python 3.6+
 
-No external dependencies (secrets, json, os are standard)
+No external dependencies (secrets, os are standard)
 
 ▶️ Running the Tool
 python zablos_secret_sharer.py
@@ -98,8 +105,6 @@ C	Combine (decrypt) shares
 M	Show mastercode mapping
 O	Generate random OTP-style codes
 W	Clear screen
-V	Save generated codes to .json
-L	Load codes from .json
 Q	Quit the program
 
 
