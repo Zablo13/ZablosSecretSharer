@@ -60,7 +60,7 @@ Code start#: 1
 Code last#: 1  
 C1: i*S=#>Erbj8BYz<Eo:b"  
 
-split message with OTP:
+split message with OTP:  
 (S)plit, (C)ombine, (M)astercode, (O)TP, (W)ipe, (Q)uit? s  
 enter shares count 2 -> 99: 2  
 Message: short secret message  
