@@ -1,8 +1,7 @@
-### Zablos Secret Sharer V3 One Time Pad ###
+### Zablos Secret Sharer V3.1 One Time Pad ###
 
 import os
 import sys
-import json
 from secrets import randbelow
 from string import ascii_uppercase
 from string import ascii_lowercase
@@ -13,7 +12,7 @@ SPACE_PLACEHOLDER = "§"
 decimal = [x for x in range(0, 100)]  
 sign = [str(x) for x in range(0, 10)] + [x for x in ascii_uppercase] + [x for x in ascii_lowercase] + [
     ".", ",", "!", "?", "_", "§", "ß", "$", "&", "%", '"', "(", ")", "-", "{", "}", "[", "]", "*", "/", "+", "Ä",
-    "Ü", "=", "²", "<", ">", ";", ":", "~", "#", "@", "Ö", "°", "^", "ö", "ä", "ü"]
+    "Ü", "=", "'", "<", ">", ";", ":", "~", "#", "@", "Ö", "°", "^", "ö", "ä", "ü"]
 mastercode = dict(zip(sign, decimal))
 masterdecode = dict(zip(decimal, sign))
 
@@ -24,40 +23,23 @@ def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-def save_codes_to_json(codes):
-    filename = input("Enter filename to save codes (codes.json): ").strip()
-    if not filename.endswith(".json"):
-        filename += ".json"
-    try:
-        with open(filename, "w") as f:
-            json.dump(codes, f, indent=4)
-        print(f"Codes saved to {filename}\n")
-    except Exception as e:
-        print(f"Error saving file: {e}\n")
-
-
-def load_codes_from_json():
-    filename = input("Enter filename to load codes from (codes.json): ").strip()
-    try:
-        with open(filename, "r") as f:
-            loaded_codes = json.load(f)
-        print(f"Codes loaded from {filename}\n")
-        return loaded_codes
-    except Exception as e:
-        print(f"Error loading file: {e}\n")
-        return None
-
 
 def validate_code_input(code):
-    if " " in code:
-        raise ValueError("Code must not contain spaces. Use a valid symbol instead.")
+    for x in code:
+        if x not in mastercode:
+            raise ValueError("Use a valid symbol instead.")
 
 
 def print_mastercode():
-    print()
-    print(masterdecode)
-    print()
-    print(mastercode)
+    mastercode_print_template = f"""
+ 
+    {masterdecode}
+ 
+    {mastercode}
+ 
+    """
+ 
+    print(mastercode_print_template)
 
 
 def translate_into_mastercode():
@@ -74,9 +56,13 @@ def translate_into_mastercode():
     for x in ucc:
         if x == ' ':
             x = SPACE_PLACEHOLDER
-            c1str += x
-        else:
-            c1str += x
+        try:
+            validate_code_input(x)
+            c1str += x    
+        except ValueError as e:
+            print(f"[Error] {e}")
+            return
+            
 
     clear()
     print(f'C1: {c1str}')
@@ -84,11 +70,24 @@ def translate_into_mastercode():
     for x in message:
         if x == " ":
             x = SPACE_PLACEHOLDER
-        messageMaster.append(mastercode.get(x, FALLBACK_CODE))
+        try:
+            validate_code_input(x)
+            messageMaster.append(mastercode.get(x))
+        except ValueError as e:
+            print(f"[Error] {e}")
+            return
+
+            
     for x in ucc:
         if x == " ":
             x = SPACE_PLACEHOLDER
-        UccMaster.append(mastercode.get(x, FALLBACK_CODE))
+        try:
+            validate_code_input(x)
+            UccMaster.append(mastercode.get(x))
+        except ValueError as e:
+            print(f"[Error] {e}")
+            return
+        
 
     if len(messageMaster) < len(UccMaster):
         missing = len(UccMaster) - len(messageMaster)
@@ -129,7 +128,6 @@ def pseudo_random_numbers(messageMaster, UccMaster, shares):
 
 def last_code(messageMaster, random_codes, UccMaster, shares):
     global codes_global
-    count = len(UccMaster)
 
     for i in range(2, shares):
         key = f'C{i}'
@@ -241,38 +239,28 @@ def generate_otp():
 def menu():
     global codes_global
     print()
-    menu_choice = input("(S)plit, (C)ombine, (M)astercode, (O)TP, (W)ipe, Sa(V)e, (L)oad, (Q)uit? ").lower()
-    if menu_choice == "s":
-        try:
-            translate_into_mastercode()
-        except ValueError as e:
-            print(f"[Error] {e}")
-    elif menu_choice == "c":
-        decode_message()
-    elif menu_choice == "m":
-        print_mastercode()
-    elif menu_choice == " " or menu_choice == "w":
-        clear()
-    elif menu_choice == "o":
-        generate_otp()
-    elif menu_choice == "v":
-        if codes_global:
-            save_codes_to_json(codes_global)
-        else:
-            print("No codes generated or loaded yet to save.\n")
-    elif menu_choice == "l":
-        loaded = load_codes_from_json()
-        if loaded:
-            codes_global = loaded
-            print("[Loaded Codes]:")
-            for key, val in codes_global.items():
-                print(f"{key}: {''.join(val)}")
-            print()
-    elif menu_choice == "q":
-        print("Goodbye!")
-        sys.exit()
-    else:
-        print("Invalid option, please try again.")
+    menu_choice = input(
+        "(S)plit, (C)ombine, (M)astercode, (O)TP, (W)ipe, (Q)uit? "
+    ).lower()
+    match menu_choice:
+        case "s":
+            try:
+                translate_into_mastercode()
+            except ValueError as e:
+                print(f"[Error] {e}")
+        case "c":
+            decode_message()
+        case "m":
+            print_mastercode()
+        case " " | "w":
+            clear()
+        case "o":
+            generate_otp()
+        case "q":
+            print("Goodbye!")
+            sys.exit()
+        case _:
+            print("Invalid option, please try again.")
 
 
 def main():
