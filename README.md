@@ -65,9 +65,11 @@ split message with OTP:
 enter shares count 2 -> 99: 2  
 Message: short secret message  
 C1: i*S=#>Erbj8BYz<Eo:b"  
+  
 -> result:  
 C1: i*S=#>Erbj8BYz<Eo:b"  
-C2: A,Mß,]e<18WiX<re4k5ß  
+C2: A,Mß,]e<18WiX<re4k5ß
+  
 -> combine:  
 Message: short secret message  
   
