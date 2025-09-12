@@ -17,7 +17,6 @@ This tool supports both:
 - Reconstruct messages from all shares
 - Perfect secrecy with 2-share mode (OTP)
 - Pseudo-random OTP code generation with python's secrets - modul
-- Save and load shares as `.json`
 - Terminal-based interface
 
 ---
@@ -73,13 +72,13 @@ C2: A,Mß,]e<18WiX<re4k5ß
 -> combine:  
 Message: short secret message  
   
-🎲 Why secrets?
+🎲 Why secrets?  
 secrets uses system-level sources (/dev/urandom or CryptGenRandom) designed for crypto.
 random is deterministic and predictable, even if seeded with time.
 OTP security collapses if the pad isn’t truly random.
 
 
-🛡️ Best Practices for OTP
+🛡️ Best Practices for OTP  
 Pad length ≥ message length (never shorter).
 Never reuse pads (once used, discard forever).
 Distribute pads securely (sending them alongside ciphertext breaks the whole system).
