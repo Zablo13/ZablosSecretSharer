@@ -31,15 +31,10 @@ def validate_code_input(code):
 
 
 def print_mastercode():
-    mastercode_print_template = f"""
- 
-    {masterdecode}
- 
-    {mastercode}
- 
-    """
- 
-    print(mastercode_print_template)
+    counter = 0
+    for x in mastercode:
+        print(x,":",counter)
+        counter += 1
 
 
 def translate_into_mastercode():
