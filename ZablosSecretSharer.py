@@ -1,27 +1,26 @@
-### Zablos Secret Sharer V3.1 One Time Pad ###
-
+### Zablos Secret Sharer V3.0.2 One Time Pad ###
 import os
 import sys
 from secrets import randbelow
-from string import ascii_uppercase
-from string import ascii_lowercase
+from string import ascii_uppercase, ascii_lowercase
+
 
 FALLBACK_CODE = 67
 SPACE_PLACEHOLDER = "§"
 
-decimal = [x for x in range(0, 100)]  
+decimal = [x for x in range(0, 100)]
 sign = [str(x) for x in range(0, 10)] + [x for x in ascii_uppercase] + [x for x in ascii_lowercase] + [
     ".", ",", "!", "?", "_", "§", "ß", "$", "&", "%", '"', "(", ")", "-", "{", "}", "[", "]", "*", "/", "+", "Ä",
-    "Ü", "=", "'", "<", ">", ";", ":", "~", "#", "@", "Ö", "°", "^", "ö", "ä", "ü"]
+    "Ü", "=", "'", "<", ">", ";", ":", "~", "#", "@", "Ö", "°", "^", "ö", "ä", "ü"
+]
 mastercode = dict(zip(sign, decimal))
 masterdecode = dict(zip(decimal, sign))
 
-codes_global = {}  
+codes_global = {}
 
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
-
 
 
 def validate_code_input(code):
@@ -33,15 +32,19 @@ def validate_code_input(code):
 def print_mastercode():
     counter = 0
     for x in mastercode:
-        print(x,":",counter)
+        print(x, ":", counter)
         counter += 1
 
 
-def translate_into_mastercode():
+def translate_into_mastercode(message=None):
     global codes_global
-
     shares = check_int()
-    message = list(input("Message: "))
+
+    if message is None:
+        message = list(input("Message: "))
+    else:
+        message = list(message)
+
     messageMaster = []
     UccMaster = []
     c1str = ''
@@ -53,15 +56,13 @@ def translate_into_mastercode():
             x = SPACE_PLACEHOLDER
         try:
             validate_code_input(x)
-            c1str += x    
+            c1str += x
         except ValueError as e:
             print(f"[Error] {e}")
             return
-            
-
     clear()
     print(f'C1: {c1str}')
-
+    
     for x in message:
         if x == " ":
             x = SPACE_PLACEHOLDER
@@ -69,10 +70,9 @@ def translate_into_mastercode():
             validate_code_input(x)
             messageMaster.append(mastercode.get(x))
         except ValueError as e:
-            print(f"[Error] {e}")
-            return
+            print(x,"sign not found")
+            x = SPACE_PLACEHOLDER
 
-            
     for x in ucc:
         if x == " ":
             x = SPACE_PLACEHOLDER
@@ -82,8 +82,6 @@ def translate_into_mastercode():
         except ValueError as e:
             print(f"[Error] {e}")
             return
-        
-
     if len(messageMaster) < len(UccMaster):
         missing = len(UccMaster) - len(messageMaster)
         for _ in range(missing):
@@ -91,10 +89,8 @@ def translate_into_mastercode():
     elif len(messageMaster) > len(UccMaster):
         print("Code is too short!")
         return
-
     codes_global = {}
     codes_global['C1'] = [x for x in c1str]
-
     if shares == 2:
         UccNeg = []
         for x in UccMaster:
@@ -123,26 +119,21 @@ def pseudo_random_numbers(messageMaster, UccMaster, shares):
 
 def last_code(messageMaster, random_codes, UccMaster, shares):
     global codes_global
-
     for i in range(2, shares):
         key = f'C{i}'
         templist = random_codes[key]
         codes_global[key] = [masterdecode[y] for y in templist]
         messageOut = ''.join(codes_global[key])
         print(f'{key}: {messageOut}')
-
     mdtemp = list(zip(*random_codes.values()))
     copylist = []
     for l in mdtemp:
         copylist.append(sum(l))
-
     finalSum = list(sum(i) for i in (zip(copylist, UccMaster)))
     copylist.clear()
     copylist = [x % 100 for x in finalSum]
     last_code_list = [((m - c) % 100) for m, c in zip(messageMaster, copylist)]
-
     last_code_chars = [masterdecode[x] for x in last_code_list]
-
     codes_global[f'C{shares}'] = last_code_chars
     messageOut = ''.join(last_code_chars)
     print(f'C{shares}: {messageOut}')
@@ -153,7 +144,6 @@ def decode_message():
     codes = {}
     copylist = []
     x = 1
-
     for _ in range(shares):
         key = f'C{x}'
         value = list(input(f'{key}: '))
@@ -164,14 +154,11 @@ def decode_message():
             return
         codes[key] = value
         x += 1
-
     if shares <= 1:
         print("error!")
         return
-
     messageOut = ""
     md = list(zip(*codes.values()))
-
     for l in md:
         temp = 0
         for value in l:
@@ -179,7 +166,6 @@ def decode_message():
         if temp >= 100:
             temp = temp % 100
         copylist.append(temp)
-
     for x in copylist:
         messageOut += masterdecode[x]
     print()
@@ -205,7 +191,6 @@ def generate_otp():
             break
         except ValueError:
             print("Invalid input. Please enter a valid integer for code length.")
-    
     while True:
         try:
             range_low = int(input('Code start#: '))
@@ -216,14 +201,11 @@ def generate_otp():
             break
         except ValueError:
             print("Invalid input. Please enter valid integers for start and last code numbers.")
-
     random_codes = {}
-
     for x in range(range_low, range_high + 1):
         key = f'C{x}'
         value = [randbelow(100) for _ in range(count)]
         random_codes[key] = value
-
     codes_global = {}
     for key, values in random_codes.items():
         codes_global[key] = [masterdecode[y] for y in values]
@@ -232,30 +214,39 @@ def generate_otp():
 
 
 def menu():
-    global codes_global
-    print()
-    menu_choice = input(
-        "(S)plit, (C)ombine, (M)astercode, (O)TP, (W)ipe, (Q)uit? "
-    ).lower()
-    match menu_choice:
-        case "s":
-            try:
-                translate_into_mastercode()
-            except ValueError as e:
-                print(f"[Error] {e}")
-        case "c":
-            decode_message()
-        case "m":
-            print_mastercode()
-        case " " | "w":
-            clear()
-        case "o":
-            generate_otp()
-        case "q":
-            print("Goodbye!")
-            sys.exit()
-        case _:
-            print("Invalid option, please try again.")
+    while True:
+        menu_choice = input(
+            "(S)plit, (P)aste, (C)ombine, (M)astercode, (O)TP, (W)ipe, (Q)uit? "
+        ).lower()
+        match menu_choice:
+            case "s":
+                try:
+                    translate_into_mastercode()
+                except ValueError as e:
+                    print(f"[Error] {e}")
+            case "p":
+                print("Paste your message below. End input with a line containing END+++")
+                lines = []
+                while True:
+                    line = input()
+                    if line.strip() == "END+++":
+                        break
+                    lines.append(line)
+                message = " ".join(lines)
+                translate_into_mastercode(message=message)
+            case "c":
+                decode_message()
+            case "m":
+                print_mastercode()
+            case " " | "w":
+                clear()
+            case "o":
+                generate_otp()
+            case "q":
+                print("Goodbye!")
+                sys.exit()
+            case _:
+                print("Invalid option, please try again.")
 
 
 def main():
