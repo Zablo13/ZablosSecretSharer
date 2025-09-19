@@ -71,7 +71,7 @@ def translate_into_mastercode(message=None):
             messageMaster.append(mastercode.get(x))
         except ValueError as e:
             print(x,"sign not found")
-            x = SPACE_PLACEHOLDER
+            messageMaster.append(SPACE_PLACEHOLDER)
 
     for x in ucc:
         if x == " ":
