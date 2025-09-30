@@ -48,7 +48,7 @@ def translate_into_mastercode(message=None):
     messageMaster = []
     UccMaster = []
     c1str = ''
-    ucc_input = input(f'C1: ')
+    ucc_input = input(f'OTP: ')
     ucc = list(ucc_input)
 
     for x in ucc:
