@@ -203,7 +203,7 @@ def generate_otp():
             print("Invalid input. Please enter valid integers for start and last code numbers.")
     random_codes = {}
     for x in range(range_low, range_high + 1):
-        key = f'C{x}'
+        key = f'OTP {x}/{range_high}'
         value = [randbelow(100) for _ in range(count)]
         random_codes[key] = value
     codes_global = {}
