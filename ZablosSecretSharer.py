@@ -1,4 +1,4 @@
-### Zablos Secret Sharer V3.0.3 One Time Pad ###
+### Zablos Secret Sharer V3.0.4 One Time Pad ###
 import os
 import sys
 from secrets import randbelow
