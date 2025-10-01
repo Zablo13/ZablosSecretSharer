@@ -184,23 +184,23 @@ def generate_otp():
     global codes_global
     while True:
         try:
-            count = int(input("Code length: "))
+            count = int(input("OTP length: "))
             if count <= 0:
                 print("Please enter a positive number.")
                 continue
             break
         except ValueError:
-            print("Invalid input. Please enter a valid integer for code length.")
+            print("Invalid input. Please enter a valid integer for OTP length.")
     while True:
         try:
-            range_low = int(input('Code start#: '))
-            range_high = int(input('Code last#: '))
+            range_low = int(input('OTP start#: '))
+            range_high = int(input('OTP last#: '))
             if range_low > range_high:
                 print("Start number must be less than or equal to last number.")
                 continue
             break
         except ValueError:
-            print("Invalid input. Please enter valid integers for start and last code numbers.")
+            print("Invalid input. Please enter valid integers for start and last OTP numbers.")
     random_codes = {}
     for x in range(range_low, range_high + 1):
         key = f'OTP {x}/{range_high}'
