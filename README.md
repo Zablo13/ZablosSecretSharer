@@ -30,15 +30,15 @@ Characters (letters, digits, symbols) are converted into numbers using a fixed m
 ### Encryption
 
 - **2 Shares (OTP mode):**
-  - You enter a secret key (`Code1`).
-  - The tool calculates `Code2` such that:
+  - You enter a secret key (`OTP`).
+  - The tool calculates `Share2` such that:
     ```
-    Message = (Code1 + Code2) mod 100
+    Message = (Share1 + Share2) mod 100
     ```
   - This mimics a One-Time Pad: perfectly secure if Code1 is random and used only once.
 
 - **More than 2 Shares:**
-  - Tool generates random shares (`Code2`, `Code3`, ..., `Code(N-1)`).
+  - Tool generates random shares (`Share2`, `Share3`, ..., `Share(N-1)`).
   - The final code is calculated so that all shares sum (mod 100) to the original message.
 
 ### Decryption
@@ -57,19 +57,19 @@ create a One Time Pad with at least the message length:
 Code length: 20  
 Code start#: 1  
 Code last#: 1  
-C1: i*S=#>Erbj8BYz<Eo:b"  
+OTP1/1: i*S=#>Erbj8BYz<Eo:b"  
 
 split message with OTP:  
 (S)plit, (C)ombine, (M)astercode, (O)TP, (W)ipe, (Q)uit? s  
 enter shares count 2 -> 99: 2  
 Message: short secret message  
-C1: i*S=#>Erbj8BYz<Eo:b"  
+OTP: i*S=#>Erbj8BYz<Eo:b"  
   
 -> result:  
-C1: i*S=#>Erbj8BYz<Eo:b"  
-C2: A,Mß,]e<18WiX<re4k5ß
+Share1/2: i*S=#>Erbj8BYz<Eo:b"  
+Share2/2: A,Mß,]e<18WiX<re4k5ß
   
--> combine:  
+-> combine the shares:  
 Message: short secret message  
   
 🎲 Why secrets?  
@@ -97,7 +97,7 @@ python zablos_secret_sharer.py
 
 Use the interactive menu:
 
-(S)plit, (C)ombine, (M)astercode, (O)TP, (W)ipe, Sa(V)e, (L)oad, (Q)uit?
+(S)plit, (C)ombine, (M)astercode, (O)TP, (W)ipe, (Q)uit?
 
 Menu Options
 Option	Description
