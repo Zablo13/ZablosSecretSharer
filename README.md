@@ -52,8 +52,8 @@ Characters (letters, digits, symbols) are converted into numbers using a fixed m
 ## Example
 
 ### Encrypt (2-share mode)
-create a One Time Pad with at least the message length:
-(S)plit, (C)ombine, (M)astercode, (O)TP, (W)ipe, (Q)uit? o  
+create a One Time Pad with at least the message length:  
+(S)plit, (C)ombine, (M)astercode, (O)TP, (W)ipe, (Q)uit? o    
 Code length: 20  
 Code start#: 1  
 Code last#: 1  
@@ -67,7 +67,7 @@ OTP: i*S=#>Erbj8BYz<Eo:b"
   
 -> result:  
 Share1/2: i*S=#>Erbj8BYz<Eo:b"  
-Share2/2: A,Mß,]e<18WiX<re4k5ß
+Share2/2: A,Mß,]e<18WiX<re4k5ß  
   
 -> combine the shares:  
 Message: short secret message  
